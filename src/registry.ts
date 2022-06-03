@@ -1,5 +1,4 @@
-import { App } from './app'
-import { Context } from './context'
+import { App, Context } from './context'
 import { Plugin } from './plugin'
 
 function isApplicable(object: Plugin) {
