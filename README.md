@@ -8,9 +8,9 @@
 AOP Framework for Modern JavaScript Applications.
 
 ```ts
-import { App } from 'cordis'
+import { Context } from 'cordis'
 
-const app = new App()
+const app = new Context()
 
 app.plugin(plugin)              // use plugins
 app.on(event, callback)         // listen to events

@@ -1,4 +1,4 @@
-import { App, Context, Service } from '../src'
+import { Context, Service } from '../src'
 import { expect } from 'chai'
 import * as jest from 'jest-mock'
 import './shared'
@@ -11,7 +11,7 @@ describe('Service', () => {
       }
     }
 
-    const app = new App()
+    const app = new Context()
     app.plugin(Foo)
     expect(app.foo).to.be.undefined
 
@@ -29,7 +29,7 @@ describe('Service', () => {
       }
     }
 
-    const app = new App()
+    const app = new Context()
     app.plugin(Foo)
     expect(app.foo).to.be.instanceOf(Foo)
   })
@@ -38,7 +38,7 @@ describe('Service', () => {
     const callback = jest.fn()
     const dispose = jest.fn(() => {})
 
-    const app = new App()
+    const app = new Context()
     app.using(['foo'], (ctx) => {
       callback(ctx.foo.bar)
       ctx.on('dispose', dispose)

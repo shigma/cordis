@@ -1,4 +1,4 @@
-import { App, Context } from '../src'
+import { Context } from '../src'
 import { expect } from 'chai'
 import { event, filter } from './shared'
 import * as jest from 'jest-mock'
@@ -24,7 +24,7 @@ describe('Fork', () => {
       ctx.plugin(reusable, { foo: 2 })
     }
 
-    const app = new App()
+    const app = new Context()
     app.intersect(filter).plugin(pluginA)
     app.emit({ flag: false }, event)
     expect(callback.mock.calls).to.have.length(0)
@@ -64,7 +64,7 @@ describe('Fork', () => {
       },
     }
 
-    const app = new App()
+    const app = new Context()
     app.plugin(reusable, { foo: 0 })
     app.intersect(filter).plugin(reusable, { foo: 1 })
     app.exclude(filter).plugin(reusable, { foo: 2 })
@@ -85,7 +85,7 @@ describe('Fork', () => {
   })
 
   it('deferred execution', () => {
-    const app = new App()
+    const app = new Context()
     const callback = jest.fn()
     const plugin = {
       using: ['foo'],

@@ -30,6 +30,8 @@ export namespace Lifecycle {
     once<K extends EventName>(name: K, listener: Events[K], prepend?: boolean): () => boolean
     before<K extends BeforeEventName>(name: K, listener: BeforeEventMap[K], append?: boolean): () => boolean
     off<K extends EventName>(name: K, listener: Events[K]): boolean
+    start(): Promise<void>
+    stop(): void
   }
 }
 
@@ -197,11 +199,11 @@ export class Lifecycle {
     await this.flush()
   }
 
-  async stop() {
+  stop() {
     this.isActive = false
     this.emit('logger/debug', 'app', 'stopped')
     // `dispose` event is handled by ctx.disposables
-    await Promise.all(this.ctx.state.disposables.map(dispose => dispose()))
+    this.ctx.state.disposables.splice(0, Infinity).forEach(dispose => dispose())
   }
 }
 

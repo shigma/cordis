@@ -1,10 +1,13 @@
 import { defineProperty } from 'cosmokit'
-import { App } from './app'
 import { Lifecycle } from './lifecycle'
 import { Plugin } from './plugin'
 import { Registry } from './registry'
 
 export type Filter = (session: Lifecycle.Session) => boolean
+
+export interface App extends Context {
+  options?: Context.Config
+}
 
 export interface Context extends Context.Services, Context.Meta, Lifecycle.Delegates, Registry.Delegates {}
 
@@ -12,8 +15,13 @@ export class Context {
   static readonly current = Symbol('source')
   static readonly immediate = Symbol('immediate')
 
-  constructor(meta: Context.Meta) {
-    Object.assign(this, meta)
+  constructor(config?: Context.Config) {
+    this.filter = () => true
+    this.app = this
+    this.app.options = Registry.validate(Context, config)
+    for (const key of Object.getOwnPropertySymbols(Context.internal)) {
+      this[key] = new Context.internal[key](this, this.app.options)
+    }
   }
 
   get source() {
@@ -27,7 +35,7 @@ export class Context {
   }
 
   fork(meta: Partial<Context.Meta>) {
-    return new Context({ ...this, ...meta })
+    return Object.assign(Object.create(this), meta)
   }
 
   any() {
@@ -59,6 +67,8 @@ export class Context {
 }
 
 export namespace Context {
+  export interface Config extends Lifecycle.Config, Registry.Config {}
+
   /** @deprecated for backward compatibility */
   export interface Services {
     app: App
@@ -122,6 +132,6 @@ export namespace Context {
 
   service('lifecycle', {
     constructor: Lifecycle,
-    methods: ['on', 'once', 'off', 'before', 'after', 'parallel', 'emit', 'serial', 'bail', 'waterfall', 'chain'],
+    methods: ['on', 'once', 'off', 'before', 'after', 'parallel', 'emit', 'serial', 'bail', 'waterfall', 'chain', 'start', 'stop'],
   })
 }

@@ -1,10 +1,10 @@
-import { App } from '../src'
+import { Context } from '../src'
 import * as jest from 'jest-mock'
 import { expect } from 'chai'
 
 describe('Lifecycle', () => {
   it('basic support', async () => {
-    const app = new App()
+    const app = new Context()
     const callback = jest.fn(() => {})
 
     app.on('ready', callback)
@@ -15,7 +15,5 @@ describe('Lifecycle', () => {
 
     app.on('ready', callback)
     expect(callback.mock.calls).to.have.length(2)
-
-    await app.stop()
   })
 })
